@@ -75,5 +75,42 @@ employeesRouter.post('/', (req, res, next) => {
   );
 });
 
+//PUT router updates employee with specific employee Id
+employeesRouter.put('/:employeeId', (req, res, next) => {
+  const name = req.body.employee.name;
+  const postion = req.body.employee.position;
+  const wage = req.body.employee.wage;
+  const isCurrentEmployee = req.body.employee.isCurrentEmployee === 0 ? 0 : 1;
+  if (!name || !postion || !wage){
+    res.sendStatus(400);                     //request has incorrect parameters
+  }
+
+  //update employee into Employee table
+  db.run(`UPDATE Employee SET name = $name, position = $position,
+    wage = $wage, is_current_employee = $isCurrentEmployee WHERE id = $employeeId`,
+    {
+      $name: name,
+      $position: postion,
+      $wage: wage,
+      $isCurrentEmployee: isCurrentEmployee,
+      $employeeId: req.params.employeeId
+    },
+    function(error){
+      if (error){
+        next(error);
+      } else {
+        db.get(`SELECT * FROM Employee WHERE id = ${req.params.employeeId}`,
+          (error, employee) => {
+            if (error){
+              next(error);
+            }
+            res.status(200).json({ employee: employee });
+          })
+      }
+    }
+  );
+
+})
+
 
 module.exports = employeesRouter;     //export employees router
