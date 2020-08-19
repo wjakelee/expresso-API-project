@@ -4,6 +4,8 @@ const employeesRouter = express.Router();       //create employees router
 const sqlite3 = require('sqlite3');             //import database
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
+const timesheetsRouter = require('./timesheets');   //import timesheets router
+
 
 /*for any route that has an /:employeeId parameter, this handler will be executed first
 to make sure the employeeId exists in the database*/
@@ -20,6 +22,10 @@ employeesRouter.param('employeeId', (req, res, next, employeeId) => {
       }
     });
 });
+
+
+//directs route to timesheets router
+employeesRouter.use('./:employeeId/timesheets', timesheetsRouter); 
 
 
 //GET route retrieves all current employees
