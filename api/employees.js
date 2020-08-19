@@ -14,6 +14,7 @@ employeesRouter.param('employeeId', (req, res, next, employeeId) => {
         next(error);
       } else if (employee) {
         req.employee = employee;
+        next();
       } else {
         res.sendStatus(404);                //employee id does not exist in table
       }
@@ -30,6 +31,12 @@ employeesRouter.get('/', (req, res, next) => {
       }
       res.status(200).json({ employees: employees });
     })
+})
+
+
+//GET route retrievs request employee by employeeId
+employeesRouter.get('/:employeeId', (req, res, next) => {
+  res.status(200).json({ employee: req.employee });
 })
 
 
