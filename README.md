@@ -1,6 +1,6 @@
 # Expresso
 
-This is a capstone project, I am building all of the routing and database logic for an internal tool for a coffee shop called Expresso. My progress is saved throughout this repository.
+This is a capstone project, I am building all of the routing and database logic for an internal tool for a coffee shop called Expresso. My progress is saved throughout this repository. To create this project yourself, follow the steps listed below.
 
 ## Project Overview and Guidlines
 
@@ -168,7 +168,7 @@ when first writing the functions.
 
 ## Running Program in Browser
 
-To run the program in your browser you will need to run the following in the root directory of your command terminal.:
+To run the program in your browser you will need to run the following in the root directory of your command terminal:
 *node migration.js*   -- to initialize your database tables
 *node server.js*      -- to get your server to start listening on the specified port
 
