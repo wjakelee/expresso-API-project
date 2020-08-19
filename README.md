@@ -1,8 +1,8 @@
 # Expresso
 
-## Project Overview
+This is a capstone project, I am building all of the routing and database logic for an internal tool for a coffee shop called Expresso. My progress is saved throughout this repository.
 
-In this capstone project, you will build all of the routing and database logic for an internal tool for a coffee shop called Expresso.
+## Project Overview and Guidlines
 
 The Expresso internal tool should allow users to:
 - Create, view, update, and delete menus
@@ -10,18 +10,19 @@ The Expresso internal tool should allow users to:
 - Create, view, update, and delete employees
 - Create, view, update, and delete employee's timesheets
 
-You can view all of this functionality in action in the video below:
-
-<video width="100%" height="100%" controls>
-   <source src="https://s3.amazonaws.com/codecademy-content/programs/build-apis/solution-videos/Expresso480.mov" type="video/mp4">
- The markdown processor does not support the video tag.
-</video>
-
 ## How To Begin
 
 To start, download the starting code for this project <a href="https://s3.amazonaws.com/codecademy-content/PRO/skill-paths/backend-javascript/projects/expresso/capstone-project-2-expresso-start.zip" target="_blank">here</a>. After downloading the zip folder, double click it to uncompress it and access the contents of this project.
 
 To view your local version of the site, open **index.html** in Google Chrome.
+
+In the root directory, you will need to install:
+- npm install
+- npm install express
+- npm install body-parser
+- npm install morgan
+- npm install cors
+- npm install errorhandler
 
 ## Implementation Details
 
@@ -164,3 +165,11 @@ As you implement functionality, run the tests to
 ensure you are creating correctly named variables and functions that return the proper values.
 The tests will additionally help you identify edge cases that you may not have anticipated
 when first writing the functions.
+
+## Running Program in Browser
+
+To run the program in your browser you will need to run the following in the root directory of your command terminal.:
+*node migration.js*   -- to initialize your database tables
+*node server.js*      -- to get your server to start listening on the specified port
+
+Then you will need to open the *index.html* file in your browser.
