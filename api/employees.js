@@ -25,7 +25,7 @@ employeesRouter.param('employeeId', (req, res, next, employeeId) => {
 
 
 //directs route to timesheets router
-employeesRouter.use('./:employeeId/timesheets', timesheetsRouter); 
+employeesRouter.use('/:employeeId/timesheets', timesheetsRouter); 
 
 
 //GET route retrieves all current employees
