@@ -13,13 +13,13 @@ employeesRouter.param('employeeId', (req, res, next, employeeId) => {
       if (error){
         next(error);
       } else if (employee) {
-        req.employee = employee;
+        req.employee = employee;            //attach found employee to req object
         next();
       } else {
         res.sendStatus(404);                //employee id does not exist in table
       }
-    })
-})
+    });
+});
 
 
 //GET route retrieves all current employees
@@ -29,15 +29,15 @@ employeesRouter.get('/', (req, res, next) => {
       if (error){
         next(error);
       }
-      res.status(200).json({ employees: employees });
-    })
-})
+      res.status(200).json({ employees: employees });     //send all employees as json
+    });
+});
 
 
 //GET route retrievs request employee by employeeId
 employeesRouter.get('/:employeeId', (req, res, next) => {
   res.status(200).json({ employee: req.employee });
-})
+});
 
 
 //POST route adds an employee to the Employee table is all require parameters exist
@@ -63,17 +63,18 @@ employeesRouter.post('/', (req, res, next) => {
       if (error){
         next(error);
       } else {
-        db.get(`SELECT * FROM Employee WHERE id = ${this.lastID}`,
+        db.get(`SELECT * FROM Employee WHERE id = ${this.lastID}`,      //retrieve last added employee
           (error, employee) => {
             if (error){
               next(error);
             }
-            res.status(201).json({ employee: employee });
+            res.status(201).json({ employee: employee });     //send last added employee
           })
       }
     }
   );
 });
+
 
 //PUT router updates employee with specific employee Id
 employeesRouter.put('/:employeeId', (req, res, next) => {
@@ -99,18 +100,40 @@ employeesRouter.put('/:employeeId', (req, res, next) => {
       if (error){
         next(error);
       } else {
-        db.get(`SELECT * FROM Employee WHERE id = ${req.params.employeeId}`,
+        db.get(`SELECT * FROM Employee WHERE id = ${req.params.employeeId}`, //retrieve last updated employee
           (error, employee) => {
             if (error){
               next(error);
             }
-            res.status(200).json({ employee: employee });
+            res.status(200).json({ employee: employee });       //send last updated employee
           })
       }
     }
   );
+});
 
+
+//DELETE route changes status of current employee to 0
+employeesRouter.delete('/:employeeId', (req, res, next) => {
+  db.run(`UPDATE Employee SET is_current_employee = $isCurrentEmployee WHERE id = $employeeId`,
+    {
+      $isCurrentEmployee: 0,
+      $employeeId: req.params.employeeId
+    },
+    function(error){
+      if (error){
+        next(error);
+      } else {
+        db.get(`SELECT * FROM Employee WHERE id = ${req.params.employeeId}`,  //retrieve last deleted employee
+          (error, employee) => {
+            if (error){
+              next(error);
+            }
+            res.status(200).json({ employee: employee });       //send last deleted employee
+          })
+      }
+    }
+  );
 })
-
 
 module.exports = employeesRouter;     //export employees router
