@@ -101,19 +101,32 @@ menusRouter.put('/:menuId', (req, res, next) => {
   );
 });
 
-//NEED TO FIX THIS, IT RELATES TO MENU ITEMS
-// //DELETE route deletes requested menu
-// menusRouter.delete('/:menuId', (req, res, next) => {
-//   db.run(`DELETE FROM Menu WHERE id = $menuId`, { $menuId: req.params.menuId },
-//     function(error){
-//       if (error){
-//         next(error);
-//       } else {
-//             res.sendStatus(204);
-//       }
-//     }
-//   );
-// })
+
+//DELETE route deletes requested menu if no related menu items
+menusRouter.delete('/:menuId', (req, res, next) => {
+  db.get(`SELECT * FROM MenuItem WHERE menu_id = $menuId`, { $menuId: req.params.menuId },
+    (error, menuItems) => {
+      if (error){
+        next(error);
+      } else {
+        if (menuItems){
+          return res.sendStatus(400);              //menuId has related menuItems (can't delete if related)
+        }
+        else {
+          db.run(`DELETE FROM Menu WHERE id = $menuId`, { $menuId: req.params.menuId },
+            function(error){
+              if (error){
+                next(error);
+              } else {
+                res.sendStatus(204);
+              }
+            }
+          );
+        }
+      } 
+    }
+  );
+});
 
 
 
