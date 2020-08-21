@@ -73,4 +73,42 @@ menuItemsRouter.post('/', (req, res, next) => {
 });
 
 
+//PUT route updates menuItem related to menuItem id
+menuItemsRouter.put('/:menuItemId', (req, res, next) => {
+  const name = req.body.menuItem.name;
+  const description = req.body.menuItem.description;
+  const inventory = req.body.menuItem.inventory;
+  const price = req.body.menuItem.price;
+  const menuItemId = req.params.menuItemId;
+  if (!name || !inventory || !price){
+    res.sendStatus(400);                     //request has incorrect parameters
+  }
+
+  //update menuItem in MenuItem table
+  db.run(`UPDATE MenuItem SET name = $name, description = $description,
+  inventory = $inventory, price = $price WHERE id = $menuItemId`,
+    {
+      $name: name,
+      $description: description,
+      $inventory: inventory,
+      $price: price,
+      $menuItemId: menuItemId
+    },
+    function(error){
+      if (error){
+        next(error);
+      } else {
+        db.get(`SELECT * FROM MenuItem WHERE id = ${menuItemId}`,      //retrieve updated menuItem
+          (error, menuItem) => {
+            if (error){
+              next(error);
+            }
+            res.status(200).json({ menuItem: menuItem });     //send updated menuItem
+          })
+      }
+    }
+  );
+});
+
+
 module.exports = menuItemsRouter;       //export menu items router
