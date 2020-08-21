@@ -5,6 +5,23 @@ const sqlite3 = require('sqlite3');             //import database
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
 
+/*for any route that has an /:menuItemId parameter, this handler will be executed first
+to make sure the menuItemId exists in the database*/
+menuItemsRouter.param('menuItemId', (req, res, next, menuItemId) => {
+  db.get(`SELECT * FROM MenuItem WHERE id = $menuItemId`, { $menuItemId: menuItemId },
+    (error, menuItem) => {
+      if (error){
+        next(error);
+      } else if (menuItem) {
+        req.menuItem = menuItem;            //attach found menuItem to req object
+        next();
+      } else {
+        res.sendStatus(404);                //menuItem id does not exist in table
+      }
+    });
+});
+
+
 //GET route retrieves all current menu items
 menuItemsRouter.get('/', (req, res, next) => {
   db.all(`SELECT * FROM MenuItem WHERE menu_id = $menuId`,
@@ -17,6 +34,43 @@ menuItemsRouter.get('/', (req, res, next) => {
     }
   )
 })
+
+
+//POST route creates a new menuItem related to menu id
+menuItemsRouter.post('/', (req, res, next) => {
+  const name = req.body.menuItem.name;
+  const description = req.body.menuItem.description;
+  const inventory = req.body.menuItem.inventory;
+  const price = req.body.menuItem.price;
+  if (!name || !inventory || !price){
+    res.sendStatus(400);                     //request has incorrect parameters
+  }
+
+  //insert new menuItem into MenuItem table
+  db.run(`INSERT INTO MenuItem (name, description, inventory, price, menu_id)
+  VALUES ($name, $description, $inventory, $price, $menuId)`,
+    {
+      $name: name,
+      $description: description,
+      $inventory: inventory,
+      $price: price,
+      $menuId: req.params.menuId
+    },
+    function(error){
+      if (error){
+        next(error);
+      } else {
+        db.get(`SELECT * FROM MenuItem WHERE id = ${this.lastID}`,      //retrieve last added menuItem
+          (error, menuItem) => {
+            if (error){
+              next(error);
+            }
+            res.status(201).json({ menuItem: menuItem });     //send last added menuItem
+          })
+      }
+    }
+  );
+});
 
 
 module.exports = menuItemsRouter;       //export menu items router
