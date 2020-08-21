@@ -4,6 +4,8 @@ const menusRouter = express.Router();           //create menus router
 const sqlite3 = require('sqlite3');             //import database
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
+const menuItemsRouter = require('./menu-items');   //import menu items router
+
 
 /*for any route that has an /:menuId parameter, this handler will be executed first
 to make sure the menuId exists in the database*/
@@ -20,6 +22,10 @@ menusRouter.param('menuId', (req, res, next, menuId) => {
       }
     });
 });
+
+
+//directs route to menu items router
+menusRouter.use('/:menuId/menu-items', menuItemsRouter);
 
 
 //GET route retrieves all current menus
