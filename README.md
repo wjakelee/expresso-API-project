@@ -168,7 +168,10 @@ when first writing the functions.
 
 ## Running Program in Browser
 
+THIS PROGRAM RUNS USING NODE VERSION 9.11.1
+
 To run the program in your browser you will need to run the following in the root directory of your command terminal:
+
 *node migration.js*   -- to initialize your database tables
 *node server.js*      -- to get your server to start listening on the specified port
 
